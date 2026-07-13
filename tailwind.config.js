@@ -12,8 +12,8 @@ module.exports = {
           light: '#566B64'
         },
         mustard: {
-          DEFAULT: '#C19A5B',
-          light: '#D4A373'
+          DEFAULT: '#E1AD01',
+          light: '#F0C740'
         },
         offwhite: '#F2F4F3',
       },

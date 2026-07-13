@@ -24,7 +24,8 @@ const api = {
   getServerUrl: () => ipcRenderer.invoke('db:get-server-url'),
   getMobileUploadPath: () => ipcRenderer.invoke('db:get-mobile-upload-path'),
   setMobileUploadPath: (path) => ipcRenderer.invoke('db:set-mobile-upload-path', path),
-  restartApp: () => ipcRenderer.send('app:restart')
+  restartApp: () => ipcRenderer.send('app:restart'),
+  checkAndUpdate: () => ipcRenderer.invoke('app:check-and-update')
 }
 
 if (process.contextIsolated) {

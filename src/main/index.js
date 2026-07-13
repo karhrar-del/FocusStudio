@@ -3,6 +3,7 @@ const path = require('path')
 const { electronApp, optimizer, is } = require('@electron-toolkit/utils')
 const db = require('./db')
 const server = require('./server')
+const updater = require('./updater')
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -302,6 +303,24 @@ app.whenReady().then(() => {
     console.log('[Restart] Relaunching application...')
     app.relaunch()
     app.exit(0)
+  })
+
+  ipcMain.handle('app:check-and-update', async () => {
+    try {
+      const result = await updater.checkForUpdate()
+      if (!result.hasUpdate) {
+        return { status: 'uptodate', version: result.currentVersion }
+      }
+      await updater.downloadAndInstall()
+      setTimeout(() => {
+        app.relaunch()
+        app.exit(0)
+      }, 2000)
+      return { status: 'success', version: result.remoteVersion }
+    } catch (error) {
+      console.error('[Updater IPC]', error.message)
+      return { status: 'error', message: error.message }
+    }
   })
 
   const mainWindow = createWindow()

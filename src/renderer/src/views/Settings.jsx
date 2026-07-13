@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FolderOpen, CheckCircle2, AlertCircle, LayoutDashboard, RefreshCw, Download, RotateCcw } from 'lucide-react'
 import { db } from '../db'
 import { useTheme } from '../context/ThemeContext'
+import { themes } from '../themes'
 
 const Settings = () => {
   const { theme, setTheme } = useTheme()
@@ -67,8 +68,7 @@ const Settings = () => {
     setUpdateState('checking')
     setUpdateError('')
     try {
-      const res = await fetch('http://localhost:3000/api/check-internal-update', { method: 'POST' })
-      const data = await res.json()
+      const data = await window.api.checkAndUpdate()
       if (data.status === 'uptodate') {
         setUpdateState('uptodate')
         setUpdateVersion(data.version)
@@ -81,7 +81,7 @@ const Settings = () => {
       }
     } catch (err) {
       setUpdateState('error')
-      setUpdateError('فشل الاتصال بالخادم: ' + err.message)
+      setUpdateError('فشل التحديث: ' + err.message)
     }
   }
 
@@ -275,23 +275,42 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <label className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all border ${theme === 'glass' ? 'border-mustard bg-mustard/5' : 'border-gray-200 hover:border-gray-300'}`}>
-            <input
-              type="radio"
-              name="theme"
-              value="glass"
-              checked={theme === 'glass'}
-              onChange={() => setTheme('glass')}
-              className="accent-mustard w-4 h-4"
-            />
-            <div>
-              <span className="font-bold text-olive-dark text-sm">الوضع الزجاجي (الافتراضي)</span>
-              <p className="text-xs text-gray-400 mt-0.5">خلفيات شفافة وتأثيرات ضبابية ولمسات عصرية</p>
-            </div>
-          </label>
-
-          <label className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all border ${theme === 'excel' ? 'border-mustard bg-mustard/5' : 'border-gray-200 hover:border-gray-300'}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {Object.values(themes).map((t) => (
+            <label key={t.id} className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all border ${theme === t.id ? 'border-mustard bg-mustard/5 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:bg-white/50'}`}>
+              <div 
+                className="w-12 h-12 rounded-full border-2 shadow-sm flex items-center justify-center shrink-0 transition-transform duration-200 hover:scale-110"
+                style={{ 
+                  backgroundColor: t.colors['--app-bg'],
+                  borderColor: theme === t.id ? t.colors['--accent-main'] : t.colors['--sidebar-bg']
+                }}
+              >
+                <div 
+                  className="w-6 h-6 rounded-full"
+                  style={{ backgroundColor: t.colors['--sidebar-bg'] }}
+                />
+              </div>
+              
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-olive-dark text-sm">{t.name}</span>
+                  <input
+                    type="radio"
+                    name="theme"
+                    value={t.id}
+                    checked={theme === t.id}
+                    onChange={() => setTheme(t.id)}
+                    className="accent-mustard w-4 h-4"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">{t.description}</p>
+              </div>
+            </label>
+          ))}
+        </div>
+        
+        <div className="mt-6 border-t border-gray-100 pt-6">
+          <label className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all border ${theme === 'excel' ? 'border-mustard bg-mustard/5' : 'border-gray-200 hover:border-gray-300'}`}>
             <input
               type="radio"
               name="theme"
@@ -301,8 +320,8 @@ const Settings = () => {
               className="accent-mustard w-4 h-4"
             />
             <div>
-              <span className="font-bold text-olive-dark text-sm">وضع الإكسل</span>
-              <p className="text-xs text-gray-400 mt-0.5">واجهة مسطحة بحدود رفيعة مثالية لإدخال البيانات</p>
+              <span className="font-bold text-olive-dark text-sm">وضع الإكسل (الكلاسيكي)</span>
+              <p className="text-xs text-gray-400 mt-0.5">واجهة مسطحة بحدود رفيعة مثالية لإدخال البيانات، بدون تأثيرات زجاجية.</p>
             </div>
           </label>
         </div>

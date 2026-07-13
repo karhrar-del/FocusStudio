@@ -6,7 +6,9 @@
 
 @layer base {
   body {
-    @apply bg-offwhite text-gray-800 font-sans;
+    @apply font-sans;
+    background-color: var(--app-bg);
+    color: var(--app-text);
   }
 }
 
@@ -15,11 +17,15 @@
     font-family: 'Lexend', sans-serif;
   }
   .glass-card {
-    @apply bg-white/40 backdrop-blur-md border border-white/50 shadow-lg rounded-2xl;
+    @apply backdrop-blur-md shadow-lg rounded-2xl;
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
   }
   
   .glass-sidebar {
-    @apply bg-olive-dark/95 backdrop-blur-lg border-e border-white/10 shadow-2xl;
+    @apply backdrop-blur-lg shadow-2xl;
+    background-color: var(--sidebar-bg);
+    border-inline-end: 1px solid var(--sidebar-border);
   }
 
   .btn-accent {
@@ -27,12 +33,19 @@
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl transition-all duration-200;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200;
+    color: var(--sidebar-text);
+  }
+  
+  .sidebar-link:hover {
+    color: var(--sidebar-text-hover);
+    background-color: var(--sidebar-bg-hover);
   }
 
-
   .sidebar-link.active {
-    @apply text-white bg-white/15 shadow-sm;
+    @apply shadow-sm;
+    color: var(--sidebar-text-active);
+    background-color: var(--sidebar-bg-active);
   }
 
   .scrollbar-hide::-webkit-scrollbar {
